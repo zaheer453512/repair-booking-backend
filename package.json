@@ -1,0 +1,12 @@
+{
+  "name": "repair-booking-backend",
+  "version": "1.0.0",
+  "description": "Serverless backend for Shopify Repair Booking — Gmail SMTP",
+  "main": "api/send-booking.js",
+  "engines": {
+    "node": ">=18.x"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.13"
+  }
+}
