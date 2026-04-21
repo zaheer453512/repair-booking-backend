@@ -484,7 +484,7 @@ a {
 }
 
 .hdr {
-  background: #1C2517;
+  background: #097F70;
   border-radius: 16px 16px 0 0;
   padding: 22px 36px;
   display: flex;
@@ -501,7 +501,7 @@ a {
 
 .hdr-meta {
   font-size: 11px;
-  color: rgba(255,255,255,.35);
+  color: white;
   margin-top: 4px;
 }
 
@@ -509,7 +509,7 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #EF4444;
+  background: #C2230E;
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -528,7 +528,7 @@ a {
 }
 
 .alert-bar {
-  background: #2C4530;
+  background: #0B9986;
   padding: 14px 36px;
   display: flex;
   align-items: center;
@@ -550,9 +550,9 @@ a {
 }
 
 .ab-ref {
-  background: rgba(255,255,255,.10);
+  background: #FFBF00;
   border: 1px solid rgba(255,255,255,.18);
-  color: #A8D4AA;
+  color: black;
   font-size: 12px;
   font-weight: 700;
   padding: 5px 12px;
@@ -688,7 +688,7 @@ table.info a {
 }
 
 .ab.p {
-  background: #2C4530;
+  background: #097F70;
   color: #fff;
 }
 
