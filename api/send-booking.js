@@ -1,827 +1,502 @@
 // api/send-booking.js
 // MobileBitX — Vercel Serverless Function
-// Gmail SMTP via Nodemailer | Professional Branded Email Templates
+// Gmail SMTP via Nodemailer
+// ✅ Table-based email layout — works in ALL email clients (Gmail, Outlook, Apple Mail)
 
 const nodemailer = require('nodemailer');
 
-// ── Logo URL ──────────────────────────────────────────────────
-// Upload mobilebitx.png to Shopify Admin → Content → Files
-// Then paste the CDN URL in your Vercel Environment Variables
-// as LOGO_URL  e.g. https://cdn.shopify.com/s/files/1/xxxx/mobilebitx.png
 const LOGO_URL = process.env.LOGO_URL || 'https://cdn.shopify.com/s/files/1/0745/0669/8797/files/mobilebitx.png?v=1776717433';
 
 // ============================================================
-// CUSTOMER EMAIL
+// CUSTOMER EMAIL — TABLE BASED
 // ============================================================
 function buildCustomerEmail(data) {
   const ref = 'MBX-' + Date.now().toString().slice(-6);
 
-  return `<!DOCTYPE html>
-<html lang="en">
+  const subcategoryRow = data.subcategory
+    ? `<tr>
+        <td style="padding:10px 16px;font-size:13px;color:#7A8B70;font-weight:500;border-bottom:1px solid #EAE6E0;width:45%;">Type</td>
+        <td style="padding:10px 16px;font-size:13px;color:#1C2517;font-weight:600;border-bottom:1px solid #EAE6E0;">${data.subcategory}</td>
+      </tr>`
+    : '';
+
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Booking Confirmed — MobileBitX</title>
-<style>
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  background: #EDEAE3;
-  color: #1C2517;
-  -webkit-text-size-adjust: 100%;
-}
-
-img {
-  border: 0;
-  display: block;
-  max-width: 100%;
-}
-
-a {
-  color: #097F70;
-  text-decoration: none;
-}
-
-.wrap {
-  background: #EDEAE3;
-  padding: 40px 16px 60px;
-}
-
-.container {
-  max-width: 580px;
-  margin: 0 auto;
-}
-
-.hdr {
-  background: #097F70;
-  border-radius: 16px 16px 0 0;
-  padding: 32px 40px;
-  text-align: center;
-}
-
-.hdr img {
-  max-width: 190px;
-  height: auto;
-  margin: 0 auto;
-}
-
-.hdr-line {
-  border: none;
-  border-top: 1px solid rgba(255,255,255,.10);
-  margin: 22px 0 20px;
-}
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #ffc107;
-  border: 1px solid rgba(78,122,84,.38);
-  color: black;
-  font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: .5px;
-  padding: 8px 20px;
-  border-radius: 100px;
-}
-
-.check-dot {
-  width: 18px;
-  height: 18px;
-  background: black;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hdr-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: #fff;
-  margin-top: 16px;
-  letter-spacing: -.4px;
-  line-height: 1.2;
-}
-
-.hdr-sub {
-  font-size: 13.5px;
-  color: rgba(255,255,255,.50);
-  margin-top: 6px;
-}
-
-.card {
-  background: #fff;
-  padding: 36px 40px;
-}
-
-.ref-tag {
-  display: inline-block;
-  background: #EFF6EF;
-  color: #2C4530;
-  border: 1px solid #C8DEC9;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: .8px;
-  padding: 5px 14px;
-  border-radius: 100px;
-  text-transform: uppercase;
-  margin-bottom: 22px;
-}
-
-.hi {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1C2517;
-  margin-bottom: 8px;
-}
-
-.intro {
-  font-size: 14px;
-  color: #6B7A62;
-  line-height: 1.7;
-  border-left: 3px solid #C8DEC9;
-  padding-left: 14px;
-  margin-bottom: 28px;
-}
-
-.sec-lbl {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: #9EAD94;
-  margin-bottom: 10px;
-}
-
-.det-box {
-  background: #F7F5EF;
-  border: 1px solid #E4DFDA;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 22px;
-}
-
-.dr {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 11px 16px;
-  border-bottom: 1px solid #EAE6E0;
-  font-size: 13.5px;
-  gap:12px;
-}
-
-.dr:last-child {
-  border-bottom: none;
-}
-
-.dl {
-  color: #7A8B70;
-  font-weight: 500;
-}
-
-.dv {
-  color: #1C2517;
-  font-weight: 600;
-  text-align: right;
-  max-width: 60%;
-}
-
-.dv.g {
-  color: #2C4530;
-}
-
-.next-box {
-  background: linear-gradient(135deg,#EFF6EF,#E6EFE6);
-  border: 1px solid #C8DEC9;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 24px;
-}
-
-.next-t {
-  font-size: 13px;
-  font-weight: 700;
-  color: #2C4530;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.ndot {
-  width: 6px;
-  height: 6px;
-  background: #4E7A54;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.next-list {
-  list-style: none;
-  padding: 0;
-}
-
-.next-list li {
-  font-size: 13px;
-  color: #4A6345;
-  line-height: 1.75;
-  padding-left: 16px;
-  position: relative;
-}
-
-.next-list li::before {
-  content: "›";
-  position: absolute;
-  left: 0;
-  color: #4E7A54;
-  font-weight: 700;
-}
-
-.disc-banner {
-  background:#097F70;
-  border-radius: 10px;
-  padding: 22px 24px;
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.disc-t {
-  font-size: 15px;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 5px;
-}
-
-.disc-s {
-  font-size: 12.5px;
-  color: rgba(255,255,255,.60);
-  line-height: 1.6;
-}
-
-.disc-code {
-  display: inline-block;
-  background: black;
-  border: 1px solid rgba(255,255,255,.18);
-  color: #A8D4AA;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 6px 18px;
-  border-radius: 20px;
-  margin-top: 12px;
-  letter-spacing: 1px;
-}
-
-.cta-wrap {
-  text-align: center;
-  margin-bottom: 4px;
-}
-
-.cta-btn {
-  display: inline-block;
-  background: #097F70;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 13px 34px;
-  border-radius: 8px;
-  letter-spacing: .2px;
-}
-
-.footer {
-  background: #F2EFE9;
-  border-radius: 0 0 16px 16px;
-  padding: 24px 40px;
-  text-align: center;
-  border-top: 1px solid #E4DFDA;
-}
-
-.footer img {
-  max-width: 110px;
-  height: auto;
-  margin: 0 auto 12px;
-  opacity: .55;
-}
-
-.flinks {
-  margin-bottom: 10px;
-}
-
-.flinks a {
-  font-size: 12px;
-  color: #4E7A54;
-  margin: 0 7px;
-  font-weight: 500;
-}
-
-.flinks span {
-  color: #CDC9C2;
-  font-size: 10px;
-}
-
-.fcopy {
-  font-size: 11px;
-  color: #ADB5A3;
-  line-height: 1.8;
-}
-
-@media (max-width:600px) {
-  .hdr,
-  .card,
-  .footer {
-    padding-left: 22px;
-    padding-right: 22px;
-  }
-
-  .hdr-title {
-    font-size: 22px;
-  }
-
-  .dr {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 3px;
-  }
-
-  .dv {
-    text-align: left;
-    max-width: 100%;
-  }
-}
-</style>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Booking Confirmed — MobileBitX</title>
+  <style type="text/css">
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+    body { margin: 0 !important; padding: 0 !important; background-color: #EDEAE3; }
+    a { color: #097F70; text-decoration: none; }
+    @media screen and (max-width: 600px) {
+      .email-container { width: 100% !important; }
+      .fluid { width: 100% !important; max-width: 100% !important; }
+      .mobile-pad { padding-left: 20px !important; padding-right: 20px !important; }
+      .stack-col { display: block !important; width: 100% !important; }
+    }
+  </style>
 </head>
-<body>
-<div class="wrap">
-<div class="container">
+<body style="margin:0;padding:0;background-color:#EDEAE3;">
 
-  <div class="hdr">
-    <img src="${LOGO_URL}" alt="MobileBitX — Accessories, Repairs, Refurbished">
-    <hr class="hdr-line">
-    <div class="status-pill">
-      <span class="check-dot">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </span>
-      Booking Confirmed
-    </div>
-    <p class="hdr-title">Your Repair is Booked!</p>
-    <p class="hdr-sub">We've received your request and will be in touch soon</p>
-  </div>
+<!-- OUTER WRAPPER -->
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#EDEAE3;">
+  <tr>
+    <td style="padding:40px 16px 60px;">
 
-  <div class="card">
-    <div class="ref-tag">Ref: ${ref}</div>
-    <p class="hi">Hello ${data.firstName} ${data.lastName},</p>
-    <p class="intro">Thank you for choosing MobileBitX! Your repair booking has been successfully received. Our expert technicians will review your request and reach out within 24 hours to confirm your appointment.</p>
+      <!-- CONTAINER -->
+      <table class="email-container" role="presentation" cellspacing="0" cellpadding="0" border="0" width="580" style="margin:0 auto;">
 
-    <p class="sec-lbl">Device Details</p>
-    <div class="det-box">
-      <div class="dr"><span class="dl">Brand</span><span class="dv">${data.brand}</span></div>
-      ${data.subcategory ? `<div class="dr"><span class="dl">Type</span><span class="dv">${data.subcategory}</span></div>` : ''}
-      <div class="dr"><span class="dl">Model</span><span class="dv">${data.model}</span></div>
-      <div class="dr"><span class="dl">Repair Needed</span><span class="dv">${data.repairType}${data.isCustomRepair ? ' <em style="font-size:11px;color:#7A8B70;font-style:normal">(Custom)</em>' : ''}</span></div>
-      <div class="dr"><span class="dl">Price</span><span class="dv g">Ask for Price</span></div>
-    </div>
+        <!-- ═══ HEADER ═══ -->
+        <tr>
+          <td style="background-color:#097F70;border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
 
-    <p class="sec-lbl">Appointment Preference</p>
-    <div class="det-box">
-      <div class="dr"><span class="dl">Preferred Date</span><span class="dv">${data.preferredDate}</span></div>
-      <div class="dr"><span class="dl">Preferred Time</span><span class="dv">${data.preferredTime}</span></div>
-    </div>
+            <!-- Logo -->
+            <img src="${LOGO_URL}" alt="MobileBitX" width="180" style="max-width:180px;height:auto;display:block;margin:0 auto;">
 
-    <div class="next-box">
-      <p class="next-t"><span class="ndot"></span>What happens next?</p>
-      <ul class="next-list">
-        <li>Our team will carefully review your repair request</li>
-        <li>We'll call or email you within 24 hours to confirm</li>
-        <li>A personalised price quote will be provided</li>
-        <li>Your device will be handled by our certified technicians</li>
-      </ul>
-    </div>
+            <!-- Divider -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+              <tr><td style="padding:18px 0 16px;"><div style="border-top:1px solid rgba(255,255,255,0.12);font-size:0;line-height:0;">&nbsp;</div></td></tr>
+            </table>
 
-    <div class="disc-banner">
-      <p class="disc-t">🎉 Exclusive Offer for MobileBitX Customers</p>
-      <p class="disc-s">Enjoy <strong style="color:#fff">5% OFF</strong> on all products in our store — accessories, refurbished devices &amp; much more. A small thank-you from us to you!</p>
-      <span class="disc-code">5% OFF — All Products</span>
-    </div>
+            <!-- Status pill -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto;">
+              <tr>
+                <td style="background-color:#FFBF00;border-radius:100px;padding:8px 20px;">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle;padding-right:7px;">
+                        <div style="width:18px;height:18px;background-color:#1C2517;border-radius:50%;text-align:center;line-height:18px;">
+                          <img src="https://img.icons8.com/ios-glyphs/18/ffffff/checkmark--v1.png" alt="✓" width="10" height="10" style="display:inline-block;vertical-align:middle;">
+                        </div>
+                      </td>
+                      <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:700;color:#1C2517;letter-spacing:0.5px;white-space:nowrap;">Booking Confirmed</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
 
-    <div class="cta-wrap">
-      <a href="https://mobilebitx.com" class="cta-btn">Shop at MobileBitX →</a>
-    </div>
-  </div>
+            <!-- Title -->
+            <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:26px;font-weight:700;color:#FFFFFF;margin:16px 0 6px;letter-spacing:-0.4px;line-height:1.2;">Your Repair is Booked!</p>
+            <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;color:rgba(255,255,255,0.55);margin:0;">We've received your request and will be in touch soon</p>
 
-  <div class="footer">
-    <img src="${LOGO_URL}" alt="MobileBitX">
-    <div class="flinks">
-      <a href="https://mobilebitx.com">Website</a><span> · </span>
-      <a href="https://mobilebitx.com/pages/contact">Contact Us</a><span> · </span>
-      <a href="https://mobilebitx.com/policies/terms-of-service">Terms</a>
-    </div>
-    <p class="fcopy">
-      © 2026 MobileBitX · Accessories, Repairs, Refurbished<br>
-      This is an automated confirmation — please do not reply directly.<br>
-      For any queries, reach us through our website.
-    </p>
-  </div>
+          </td>
+        </tr>
 
-</div>
-</div>
+        <!-- ═══ MAIN CARD ═══ -->
+        <tr>
+          <td style="background-color:#FFFFFF;padding:36px 40px;" class="mobile-pad">
+
+            <!-- Ref badge -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td style="background-color:#EFF6EF;border:1px solid #C8DEC9;border-radius:100px;padding:5px 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:700;color:#2C4530;letter-spacing:0.8px;text-transform:uppercase;">
+                  REF: ${ref}
+                </td>
+              </tr>
+            </table>
+
+            <!-- Greeting -->
+            <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:18px;font-weight:700;color:#1C2517;margin:18px 0 8px;">Hello ${data.firstName} ${data.lastName},</p>
+
+            <!-- Intro with left border -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+              <tr>
+                <td width="3" style="background-color:#C8DEC9;border-radius:3px;">&nbsp;</td>
+                <td style="padding:2px 0 2px 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;color:#6B7A62;line-height:1.7;">
+                  Thank you for choosing MobileBitX! Your repair booking has been successfully received. Our expert technicians will review your request and reach out within 24 hours to confirm your appointment.
+                </td>
+              </tr>
+            </table>
+
+            <!-- Spacer -->
+            <div style="height:28px;">&nbsp;</div>
+
+            <!-- ── DEVICE DETAILS ── -->
+            <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:#9EAD94;margin:0 0 10px;">Device Details</p>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F7F5EF;border:1px solid #E4DFDA;border-radius:10px;overflow:hidden;">
+              <tr>
+                <td style="padding:10px 16px;font-size:13px;color:#7A8B70;font-weight:500;border-bottom:1px solid #EAE6E0;width:45%;">Brand</td>
+                <td style="padding:10px 16px;font-size:13px;color:#1C2517;font-weight:600;border-bottom:1px solid #EAE6E0;">${data.brand}</td>
+              </tr>
+              ${subcategoryRow}
+              <tr>
+                <td style="padding:10px 16px;font-size:13px;color:#7A8B70;font-weight:500;border-bottom:1px solid #EAE6E0;">Model</td>
+                <td style="padding:10px 16px;font-size:13px;color:#1C2517;font-weight:600;border-bottom:1px solid #EAE6E0;">${data.model}</td>
+              </tr>
+              <tr>
+                <td style="padding:10px 16px;font-size:13px;color:#7A8B70;font-weight:500;border-bottom:1px solid #EAE6E0;">Repair Needed</td>
+                <td style="padding:10px 16px;font-size:13px;color:#1C2517;font-weight:600;border-bottom:1px solid #EAE6E0;">${data.repairType}${data.isCustomRepair ? ' <span style="font-size:11px;color:#7A8B70;">(Custom)</span>' : ''}</td>
+              </tr>
+              <tr>
+                <td style="padding:10px 16px;font-size:13px;color:#7A8B70;font-weight:500;">Price</td>
+                <td style="padding:10px 16px;font-size:13px;color:#2C4530;font-weight:700;">Ask for Price</td>
+              </tr>
+            </table>
+
+            <!-- Spacer -->
+            <div style="height:22px;">&nbsp;</div>
+
+            <!-- ── APPOINTMENT ── -->
+            <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:#9EAD94;margin:0 0 10px;">Appointment Preference</p>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F7F5EF;border:1px solid #E4DFDA;border-radius:10px;overflow:hidden;">
+              <tr>
+                <td style="padding:10px 16px;font-size:13px;color:#7A8B70;font-weight:500;border-bottom:1px solid #EAE6E0;width:45%;">Preferred Date</td>
+                <td style="padding:10px 16px;font-size:13px;color:#1C2517;font-weight:600;border-bottom:1px solid #EAE6E0;">${data.preferredDate}</td>
+              </tr>
+              <tr>
+                <td style="padding:10px 16px;font-size:13px;color:#7A8B70;font-weight:500;">Preferred Time</td>
+                <td style="padding:10px 16px;font-size:13px;color:#1C2517;font-weight:600;">${data.preferredTime}</td>
+              </tr>
+            </table>
+
+            <!-- Spacer -->
+            <div style="height:22px;">&nbsp;</div>
+
+            <!-- ── WHAT NEXT ── -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#EFF6EF;border:1px solid #C8DEC9;border-radius:10px;">
+              <tr>
+                <td style="padding:20px;">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle;padding-right:8px;">
+                        <div style="width:7px;height:7px;background-color:#4E7A54;border-radius:50%;">&nbsp;</div>
+                      </td>
+                      <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:700;color:#2C4530;">What happens next?</td>
+                    </tr>
+                  </table>
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:10px;">
+                    <tr><td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;color:#4A6345;line-height:1.8;padding-left:15px;">&#8250; Our team will carefully review your repair request</td></tr>
+                    <tr><td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;color:#4A6345;line-height:1.8;padding-left:15px;">&#8250; We'll call or email you within 24 hours to confirm</td></tr>
+                    <tr><td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;color:#4A6345;line-height:1.8;padding-left:15px;">&#8250; A personalised price quote will be provided</td></tr>
+                    <tr><td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;color:#4A6345;line-height:1.8;padding-left:15px;">&#8250; Your device will be handled by our certified technicians</td></tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Spacer -->
+            <div style="height:22px;">&nbsp;</div>
+
+            <!-- ── DISCOUNT BANNER ── -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#097F70;border-radius:10px;">
+              <tr>
+                <td style="padding:24px;text-align:center;">
+                  <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:18px;margin:0 0 8px;">&#127881;</p>
+                  <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:15px;font-weight:700;color:#FFFFFF;margin:0 0 6px;">Exclusive Offer for MobileBitX Customers</p>
+                  <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;margin:0 0 14px;">
+                    Enjoy <strong style="color:#FFFFFF;">5% OFF</strong> on all products in our store &mdash; accessories, refurbished devices &amp; much more!
+                  </p>
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto;">
+                    <tr>
+                      <td style="background-color:#1C2517;border-radius:20px;padding:8px 22px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:700;color:#A8D4AA;letter-spacing:1px;">
+                        5% OFF &mdash; All Products
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Spacer -->
+            <div style="height:24px;">&nbsp;</div>
+
+            <!-- ── CTA BUTTON ── -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto;">
+              <tr>
+                <td style="background-color:#097F70;border-radius:8px;text-align:center;">
+                  <a href="https://mobilebitx.com" style="display:inline-block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:600;color:#FFFFFF;text-decoration:none;padding:13px 34px;letter-spacing:0.2px;">
+                    Shop at MobileBitX &rarr;
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+
+        <!-- ═══ FOOTER ═══ -->
+        <tr>
+          <td style="background-color:#F2EFE9;border-top:1px solid #E4DFDA;border-radius:0 0 16px 16px;padding:24px 40px;text-align:center;" class="mobile-pad">
+            <img src="${LOGO_URL}" alt="MobileBitX" width="100" style="max-width:100px;height:auto;display:block;margin:0 auto 14px;opacity:0.5;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto 12px;">
+              <tr>
+                <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;">
+                  <a href="https://mobilebitx.com" style="color:#4E7A54;font-weight:500;text-decoration:none;">Website</a>
+                  <span style="color:#CDC9C2;padding:0 6px;">&middot;</span>
+                  <a href="https://mobilebitx.com/pages/contact" style="color:#4E7A54;font-weight:500;text-decoration:none;">Contact Us</a>
+                  <span style="color:#CDC9C2;padding:0 6px;">&middot;</span>
+                  <a href="https://mobilebitx.com/policies/terms-of-service" style="color:#4E7A54;font-weight:500;text-decoration:none;">Terms</a>
+                </td>
+              </tr>
+            </table>
+            <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;color:#ADB5A3;line-height:1.8;margin:0;">
+              &copy; 2026 MobileBitX &middot; Accessories, Repairs, Refurbished<br>
+              This is an automated confirmation &mdash; please do not reply directly.<br>
+              For any queries, reach us through our website.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+      <!-- END CONTAINER -->
+
+    </td>
+  </tr>
+</table>
+<!-- END OUTER WRAPPER -->
+
 </body>
 </html>`;
 }
 
 // ============================================================
-// ADMIN EMAIL
+// ADMIN EMAIL — TABLE BASED
 // ============================================================
 function buildAdminEmail(data) {
   const ref = 'MBX-' + Date.now().toString().slice(-6);
   const submittedAt = new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' });
 
-  return `<!DOCTYPE html>
-<html lang="en">
+  const subcategoryRow = data.subcategory
+    ? `<tr>
+        <td style="padding:10px 12px;font-size:13px;color:#7A8B70;font-weight:500;border-bottom:1px solid #F5F2EC;width:130px;">Type</td>
+        <td style="padding:10px 12px;font-size:13px;color:#1C2517;font-weight:600;border-bottom:1px solid #F5F2EC;">${data.subcategory}</td>
+      </tr>`
+    : '';
+
+  const emailSubjectEncoded = encodeURIComponent(`Re: Your MobileBitX Repair Booking (${ref})`);
+  const emailBodyEncoded = encodeURIComponent(`Hello ${data.firstName},\n\nThank you for booking with MobileBitX. We have reviewed your request and would like to confirm your appointment.\n\nBest regards,\nMobileBitX Team`);
+
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>New Booking Alert — MobileBitX Admin</title>
-<style>
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  background: #EDEAE3;
-  color: #1C2517;
-  -webkit-text-size-adjust: 100%;
-}
-
-img {
-  border: 0;
-  display: block;
-  max-width: 100%;
-}
-
-a {
-  text-decoration: none;
-}
-
-.wrap {
-  background: #EDEAE3;
-  padding: 40px 16px 60px;
-}
-
-.container {
-  max-width: 580px;
-  margin: 0 auto;
-}
-
-.hdr {
-  background: #097F70;
-  border-radius: 16px 16px 0 0;
-  padding: 22px 36px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.hdr img {
-  max-width: 140px;
-  height: auto;
-}
-
-.hdr-meta {
-  font-size: 11px;
-  color: white;
-  margin-top: 4px;
-}
-
-.new-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #C2230E;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 7px 16px;
-  border-radius: 100px;
-  letter-spacing: .8px;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-
-.pulse {
-  width: 7px;
-  height: 7px;
-  background: rgba(255,255,255,.8);
-  border-radius: 50%;
-}
-
-.alert-bar {
-  background: #0B9986;
-  padding: 14px 36px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.ab-title {
-  font-size: 13.5px;
-  color: #fff;
-  font-weight: 700;
-}
-
-.ab-time {
-  font-size: 11.5px;
-  color: rgba(255,255,255,.50);
-  margin-top: 2px;
-}
-
-.ab-ref {
-  background: #FFBF00;
-  border: 1px solid rgba(255,255,255,.18);
-  color: black;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 6px;
-  letter-spacing: .8px;
-  flex-shrink: 0;
-}
-
-.card {
-  background: #fff;
-  padding: 30px 36px;
-}
-
-.section {
-  margin-bottom: 22px;
-}
-
-.sec-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #F0EDE6;
-}
-
-.s-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.s-icon.g {
-  background: #EFF6EF;
-}
-
-.s-icon.b {
-  background: #EEF2FF;
-}
-
-.s-icon.a {
-  background: #FFFBEB;
-}
-
-.sec-lbl {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: #9EAD94;
-}
-
-table.info {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-table.info tr {
-  border-bottom: 1px solid #F5F2EC;
-}
-
-table.info tr:last-child {
-  border-bottom: none;
-}
-
-table.info td {
-  padding: 10px 12px;
-  font-size: 13.5px;
-  vertical-align: top;
-}
-
-table.info td:first-child {
-  color: #7A8B70;
-  font-weight: 500;
-  width: 130px;
-}
-
-table.info td:last-child {
-  color: #1C2517;
-  font-weight: 600;
-}
-
-table.info a {
-  color: #2C4530;
-  font-weight: 600;
-}
-
-.ctag {
-  display: inline-block;
-  background: #FEF3C7;
-  color: #92400E;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  margin-left: 5px;
-}
-
-.action-row {
-  background: #F7F5EF;
-  border-radius: 10px;
-  padding: 16px 18px;
-  margin-bottom: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.ar-label {
-  font-size: 12.5px;
-  color: #6B7A62;
-  font-weight: 500;
-}
-
-.ar-btns {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.ab {
-  font-size: 13px;
-  font-weight: 600;
-  padding: 9px 18px;
-  border-radius: 7px;
-  display: inline-block;
-}
-
-.ab.p {
-  background: #097F70;
-  color: #fff;
-}
-
-.ab.o {
-  background: #fff;
-  color: #2C4530;
-  border: 1.5px solid #C8DEC9;
-}
-
-.footer {
-  background: #F2EFE9;
-  border-radius: 0 0 16px 16px;
-  padding: 18px 36px;
-  border-top: 1px solid #E4DFDA;
-  text-align: center;
-}
-
-.footer p {
-  font-size: 11px;
-  color: #ADB5A3;
-  line-height: 1.8;
-}
-
-@media (max-width:600px) {
-  .hdr,
-  .alert-bar,
-  .card,
-  .footer {
-    padding-left: 18px;
-    padding-right: 18px;
-  }
-
-  .hdr {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .action-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-</style>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>New Booking Alert — MobileBitX Admin</title>
+  <style type="text/css">
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+    body { margin: 0 !important; padding: 0 !important; background-color: #EDEAE3; }
+    @media screen and (max-width: 600px) {
+      .email-container { width: 100% !important; }
+      .mobile-pad { padding-left: 18px !important; padding-right: 18px !important; }
+    }
+  </style>
 </head>
-<body>
-<div class="wrap">
-<div class="container">
+<body style="margin:0;padding:0;background-color:#EDEAE3;">
 
-  <div class="hdr">
-    <div>
-      <img src="${LOGO_URL}" alt="MobileBitX">
-      <p class="hdr-meta">Admin Notification · Booking Alert</p>
-    </div>
-    <div class="new-pill">
-      <span class="pulse"></span>
-      New Booking
-    </div>
-  </div>
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#EDEAE3;">
+  <tr>
+    <td style="padding:40px 16px 60px;">
 
-  <div class="alert-bar">
-    <div>
-      <p class="ab-title">New Repair Booking Received</p>
-      <p class="ab-time">${submittedAt}</p>
-    </div>
-    <span class="ab-ref">${ref}</span>
-  </div>
+      <table class="email-container" role="presentation" cellspacing="0" cellpadding="0" border="0" width="580" style="margin:0 auto;">
 
-  <div class="card">
+        <!-- ═══ HEADER ═══ -->
+        <tr>
+          <td style="background-color:#097F70;border-radius:16px 16px 0 0;padding:22px 36px;" class="mobile-pad">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+              <tr>
+                <td style="vertical-align:middle;">
+                  <img src="${LOGO_URL}" alt="MobileBitX" width="130" style="max-width:130px;height:auto;display:block;">
+                  <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.45);margin:5px 0 0;">Admin Notification &middot; Booking Alert</p>
+                </td>
+                <td style="vertical-align:middle;text-align:right;">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-left:auto;">
+                    <tr>
+                      <td style="background-color:#C2230E;border-radius:100px;padding:7px 16px;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                          <tr>
+                            <td style="vertical-align:middle;padding-right:6px;">
+                              <div style="width:7px;height:7px;background-color:rgba(255,255,255,0.8);border-radius:50%;">&nbsp;</div>
+                            </td>
+                            <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:700;color:#FFFFFF;letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;">New Booking</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
 
-    <div class="section">
-      <div class="sec-row">
-        <div class="s-icon g">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3A5A40" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
-        <span class="sec-lbl">Customer Information</span>
-      </div>
-      <table class="info">
-        <tr><td>Full Name</td><td>${data.firstName} ${data.lastName}</td></tr>
-        <tr><td>Phone</td><td><a href="tel:${data.phone}">${data.phone}</a></td></tr>
-        <tr><td>Email</td><td><a href="mailto:${data.email}">${data.email}</a></td></tr>
-        <tr><td>Address</td><td>${data.address}</td></tr>
+        <!-- ═══ ALERT BAR ═══ -->
+        <tr>
+          <td style="background-color:#0B9986;padding:14px 36px;" class="mobile-pad">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+              <tr>
+                <td style="vertical-align:middle;">
+                  <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:700;color:#FFFFFF;margin:0 0 3px;">New Repair Booking Received</p>
+                  <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.55);margin:0;">${submittedAt}</p>
+                </td>
+                <td style="vertical-align:middle;text-align:right;">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-left:auto;">
+                    <tr>
+                      <td style="background-color:#FFBF00;border-radius:6px;padding:6px 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:700;color:#1C2517;letter-spacing:0.8px;white-space:nowrap;">
+                        ${ref}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- ═══ MAIN CARD ═══ -->
+        <tr>
+          <td style="background-color:#FFFFFF;padding:30px 36px;" class="mobile-pad">
+
+            <!-- ── CUSTOMER SECTION ── -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom:22px;">
+              <tr>
+                <td style="padding-bottom:10px;border-bottom:2px solid #F0EDE6;">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle;padding-right:8px;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                          <tr>
+                            <td style="width:28px;height:28px;background-color:#EFF6EF;border-radius:7px;text-align:center;vertical-align:middle;">
+                              <img src="https://img.icons8.com/ios/16/3A5A40/user--v1.png" alt="" width="14" height="14" style="display:inline-block;vertical-align:middle;">
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:#9EAD94;vertical-align:middle;">Customer Information</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr style="border-bottom:1px solid #F5F2EC;">
+                      <td style="padding:10px 12px;font-size:13px;color:#7A8B70;font-weight:500;width:130px;border-bottom:1px solid #F5F2EC;">Full Name</td>
+                      <td style="padding:10px 12px;font-size:13px;color:#1C2517;font-weight:600;border-bottom:1px solid #F5F2EC;">${data.firstName} ${data.lastName}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:10px 12px;font-size:13px;color:#7A8B70;font-weight:500;border-bottom:1px solid #F5F2EC;">Phone</td>
+                      <td style="padding:10px 12px;font-size:13px;border-bottom:1px solid #F5F2EC;"><a href="tel:${data.phone}" style="color:#097F70;font-weight:600;text-decoration:none;">${data.phone}</a></td>
+                    </tr>
+                    <tr>
+                      <td style="padding:10px 12px;font-size:13px;color:#7A8B70;font-weight:500;border-bottom:1px solid #F5F2EC;">Email</td>
+                      <td style="padding:10px 12px;font-size:13px;border-bottom:1px solid #F5F2EC;"><a href="mailto:${data.email}" style="color:#097F70;font-weight:600;text-decoration:none;">${data.email}</a></td>
+                    </tr>
+                    <tr>
+                      <td style="padding:10px 12px;font-size:13px;color:#7A8B70;font-weight:500;">Address</td>
+                      <td style="padding:10px 12px;font-size:13px;color:#1C2517;font-weight:600;">${data.address}</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+            <!-- ── DEVICE SECTION ── -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom:22px;">
+              <tr>
+                <td style="padding-bottom:10px;border-bottom:2px solid #F0EDE6;">
+                  <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:#9EAD94;margin:0;">Device Information</p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                      <td style="padding:10px 12px;font-size:13px;color:#7A8B70;font-weight:500;width:130px;border-bottom:1px solid #F5F2EC;">Brand</td>
+                      <td style="padding:10px 12px;font-size:13px;color:#1C2517;font-weight:600;border-bottom:1px solid #F5F2EC;">${data.brand}</td>
+                    </tr>
+                    ${subcategoryRow}
+                    <tr>
+                      <td style="padding:10px 12px;font-size:13px;color:#7A8B70;font-weight:500;border-bottom:1px solid #F5F2EC;">Model</td>
+                      <td style="padding:10px 12px;font-size:13px;color:#1C2517;font-weight:600;border-bottom:1px solid #F5F2EC;">${data.model}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:10px 12px;font-size:13px;color:#7A8B70;font-weight:500;">Repair</td>
+                      <td style="padding:10px 12px;font-size:13px;color:#1C2517;font-weight:600;">${data.repairType}${data.isCustomRepair ? ' <span style="background:#FEF3C7;color:#92400E;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;">CUSTOM</span>' : ''}</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+            <!-- ── APPOINTMENT SECTION ── -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom:22px;">
+              <tr>
+                <td style="padding-bottom:10px;border-bottom:2px solid #F0EDE6;">
+                  <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:#9EAD94;margin:0;">Appointment Preference</p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                      <td style="padding:10px 12px;font-size:13px;color:#7A8B70;font-weight:500;width:130px;border-bottom:1px solid #F5F2EC;">Date</td>
+                      <td style="padding:10px 12px;font-size:13px;color:#1C2517;font-weight:600;border-bottom:1px solid #F5F2EC;">${data.preferredDate}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:10px 12px;font-size:13px;color:#7A8B70;font-weight:500;">Time</td>
+                      <td style="padding:10px 12px;font-size:13px;color:#1C2517;font-weight:600;">${data.preferredTime}</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+            <!-- ── QUICK ACTIONS ── -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F7F5EF;border-radius:10px;">
+              <tr>
+                <td style="padding:16px 18px;">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                      <td style="vertical-align:middle;">
+                        <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;color:#6B7A62;font-weight:500;margin:0;">Quick response options</p>
+                      </td>
+                      <td style="vertical-align:middle;text-align:right;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-left:auto;">
+                          <tr>
+                            <td style="background-color:#097F70;border-radius:7px;padding:9px 16px;">
+                              <a href="tel:${data.phone}" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;text-decoration:none;white-space:nowrap;">&#128222; Call Now</a>
+                            </td>
+                            <td width="8">&nbsp;</td>
+                            <td style="background-color:#FFFFFF;border:1.5px solid #C8DEC9;border-radius:7px;padding:9px 16px;">
+                              <a href="mailto:${data.email}?subject=${emailSubjectEncoded}&body=${emailBodyEncoded}" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#2C4530;text-decoration:none;white-space:nowrap;">&#9993; Email Customer</a>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+
+        <!-- ═══ FOOTER ═══ -->
+        <tr>
+          <td style="background-color:#F2EFE9;border-top:1px solid #E4DFDA;border-radius:0 0 16px 16px;padding:18px 36px;text-align:center;" class="mobile-pad">
+            <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;color:#ADB5A3;line-height:1.8;margin:0;">
+              &copy; 2026 MobileBitX &middot; Internal Admin Notification<br>
+              This email contains customer personal data &mdash; do not forward or share.<br>
+              Sent automatically when a new repair booking is submitted.
+            </p>
+          </td>
+        </tr>
+
       </table>
-    </div>
+    </td>
+  </tr>
+</table>
 
-    <div class="section">
-      <div class="sec-row">
-        <div class="s-icon b">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4361EE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-        </div>
-        <span class="sec-lbl">Device Information</span>
-      </div>
-      <table class="info">
-        <tr><td>Brand</td><td>${data.brand}</td></tr>
-        ${data.subcategory ? `<tr><td>Type</td><td>${data.subcategory}</td></tr>` : ''}
-        <tr><td>Model</td><td>${data.model}</td></tr>
-        <tr><td>Repair</td><td>${data.repairType}${data.isCustomRepair ? '<span class="ctag">CUSTOM</span>' : ''}</td></tr>
-      </table>
-    </div>
-
-    <div class="section">
-      <div class="sec-row">
-        <div class="s-icon a">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        </div>
-        <span class="sec-lbl">Appointment Preference</span>
-      </div>
-      <table class="info">
-        <tr><td>Date</td><td>${data.preferredDate}</td></tr>
-        <tr><td>Time</td><td>${data.preferredTime}</td></tr>
-      </table>
-    </div>
-
-    <div class="action-row">
-      <p class="ar-label">Quick response options</p>
-      <div class="ar-btns">
-        <a href="tel:${data.phone}" class="ab p">📞 Call Now</a>
-        <a href="mailto:${data.email}?subject=Re: Your MobileBitX Repair Booking (${ref})&body=Hello ${data.firstName},%0D%0A%0D%0AThank you for booking with MobileBitX." class="ab o">✉️ Email Customer</a>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="footer">
-    <p>
-      © 2025 MobileBitX · Internal Admin Notification<br>
-      This email contains customer personal data — do not forward or share.<br>
-      Sent automatically when a new repair booking is submitted.
-    </p>
-  </div>
-
-</div>
-</div>
 </body>
 </html>`;
 }
