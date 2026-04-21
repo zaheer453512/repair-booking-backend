@@ -81,9 +81,9 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(78,122,84,.22);
+  background: #ffc107;
   border: 1px solid rgba(78,122,84,.38);
-  color: #A8D4AA;
+  color: black;
   font-size: 12.5px;
   font-weight: 600;
   letter-spacing: .5px;
@@ -94,7 +94,7 @@ a {
 .check-dot {
   width: 18px;
   height: 18px;
-  background: #097F70;
+  background: black;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -175,6 +175,7 @@ a {
   padding: 11px 16px;
   border-bottom: 1px solid #EAE6E0;
   font-size: 13.5px;
+  gap:12px;
 }
 
 .dr:last-child {
@@ -245,7 +246,7 @@ a {
 }
 
 .disc-banner {
-  background: #2C4530;
+  background:#097F70;
   border-radius: 10px;
   padding: 22px 24px;
   text-align: center;
@@ -267,13 +268,13 @@ a {
 
 .disc-code {
   display: inline-block;
-  background: rgba(255,255,255,.10);
+  background: black;
   border: 1px solid rgba(255,255,255,.18);
   color: #A8D4AA;
   font-size: 13px;
   font-weight: 700;
   padding: 6px 18px;
-  border-radius: 7px;
+  border-radius: 20px;
   margin-top: 12px;
   letter-spacing: 1px;
 }
@@ -285,7 +286,7 @@ a {
 
 .cta-btn {
   display: inline-block;
-  background: #2C4530;
+  background: #097F70;
   color: #fff;
   font-size: 14px;
   font-weight: 600;
