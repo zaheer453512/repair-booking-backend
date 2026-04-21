@@ -44,7 +44,7 @@ img {
 }
 
 a {
-  color: #3A5A40;
+  color: #097F70;
   text-decoration: none;
 }
 
@@ -59,7 +59,7 @@ a {
 }
 
 .hdr {
-  background: #1C2517;
+  background: #097F70;
   border-radius: 16px 16px 0 0;
   padding: 32px 40px;
   text-align: center;
@@ -94,7 +94,7 @@ a {
 .check-dot {
   width: 18px;
   height: 18px;
-  background: #4E7A54;
+  background: #097F70;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -354,7 +354,6 @@ a {
     max-width: 100%;
   }
 }
-
 </style>
 </head>
 <body>
@@ -449,50 +448,289 @@ function buildAdminEmail(data) {
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>New Booking Alert — MobileBitX Admin</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#EDEAE3;color:#1C2517;-webkit-text-size-adjust:100%}
-  img{border:0;display:block;max-width:100%}
-  a{text-decoration:none}
-  .wrap{background:#EDEAE3;padding:40px 16px 60px}
-  .container{max-width:580px;margin:0 auto}
-  .hdr{background:#1C2517;border-radius:16px 16px 0 0;padding:22px 36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-  .hdr img{max-width:140px;height:auto}
-  .hdr-meta{font-size:11px;color:rgba(255,255,255,.35);margin-top:4px}
-  .new-pill{display:inline-flex;align-items:center;gap:6px;background:#EF4444;color:#fff;font-size:11px;font-weight:700;padding:7px 16px;border-radius:100px;letter-spacing:.8px;text-transform:uppercase;flex-shrink:0}
-  .pulse{width:7px;height:7px;background:rgba(255,255,255,.8);border-radius:50%}
-  .alert-bar{background:#2C4530;padding:14px 36px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-  .ab-title{font-size:13.5px;color:#fff;font-weight:700}
-  .ab-time{font-size:11.5px;color:rgba(255,255,255,.50);margin-top:2px}
-  .ab-ref{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);color:#A8D4AA;font-size:12px;font-weight:700;padding:5px 12px;border-radius:6px;letter-spacing:.8px;flex-shrink:0}
-  .card{background:#fff;padding:30px 36px}
-  .section{margin-bottom:22px}
-  .sec-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #F0EDE6}
-  .s-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .s-icon.g{background:#EFF6EF}
-  .s-icon.b{background:#EEF2FF}
-  .s-icon.a{background:#FFFBEB}
-  .sec-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:#9EAD94}
-  table.info{width:100%;border-collapse:collapse}
-  table.info tr{border-bottom:1px solid #F5F2EC}
-  table.info tr:last-child{border-bottom:none}
-  table.info td{padding:10px 12px;font-size:13.5px;vertical-align:top}
-  table.info td:first-child{color:#7A8B70;font-weight:500;width:130px}
-  table.info td:last-child{color:#1C2517;font-weight:600}
-  table.info a{color:#2C4530;font-weight:600}
-  .ctag{display:inline-block;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;margin-left:5px}
-  .action-row{background:#F7F5EF;border-radius:10px;padding:16px 18px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-  .ar-label{font-size:12.5px;color:#6B7A62;font-weight:500}
-  .ar-btns{display:flex;gap:8px;flex-wrap:wrap}
-  .ab{font-size:13px;font-weight:600;padding:9px 18px;border-radius:7px;display:inline-block}
-  .ab.p{background:#2C4530;color:#fff}
-  .ab.o{background:#fff;color:#2C4530;border:1.5px solid #C8DEC9}
-  .footer{background:#F2EFE9;border-radius:0 0 16px 16px;padding:18px 36px;border-top:1px solid #E4DFDA;text-align:center}
-  .footer p{font-size:11px;color:#ADB5A3;line-height:1.8}
-  @media(max-width:600px){
-    .hdr,.alert-bar,.card,.footer{padding-left:18px;padding-right:18px}
-    .hdr{flex-direction:column;align-items:flex-start}
-    .action-row{flex-direction:column;align-items:flex-start}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  background: #EDEAE3;
+  color: #1C2517;
+  -webkit-text-size-adjust: 100%;
+}
+
+img {
+  border: 0;
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+.wrap {
+  background: #EDEAE3;
+  padding: 40px 16px 60px;
+}
+
+.container {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.hdr {
+  background: #1C2517;
+  border-radius: 16px 16px 0 0;
+  padding: 22px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hdr img {
+  max-width: 140px;
+  height: auto;
+}
+
+.hdr-meta {
+  font-size: 11px;
+  color: rgba(255,255,255,.35);
+  margin-top: 4px;
+}
+
+.new-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #EF4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 16px;
+  border-radius: 100px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.pulse {
+  width: 7px;
+  height: 7px;
+  background: rgba(255,255,255,.8);
+  border-radius: 50%;
+}
+
+.alert-bar {
+  background: #2C4530;
+  padding: 14px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ab-title {
+  font-size: 13.5px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.ab-time {
+  font-size: 11.5px;
+  color: rgba(255,255,255,.50);
+  margin-top: 2px;
+}
+
+.ab-ref {
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.18);
+  color: #A8D4AA;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 6px;
+  letter-spacing: .8px;
+  flex-shrink: 0;
+}
+
+.card {
+  background: #fff;
+  padding: 30px 36px;
+}
+
+.section {
+  margin-bottom: 22px;
+}
+
+.sec-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #F0EDE6;
+}
+
+.s-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s-icon.g {
+  background: #EFF6EF;
+}
+
+.s-icon.b {
+  background: #EEF2FF;
+}
+
+.s-icon.a {
+  background: #FFFBEB;
+}
+
+.sec-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #9EAD94;
+}
+
+table.info {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.info tr {
+  border-bottom: 1px solid #F5F2EC;
+}
+
+table.info tr:last-child {
+  border-bottom: none;
+}
+
+table.info td {
+  padding: 10px 12px;
+  font-size: 13.5px;
+  vertical-align: top;
+}
+
+table.info td:first-child {
+  color: #7A8B70;
+  font-weight: 500;
+  width: 130px;
+}
+
+table.info td:last-child {
+  color: #1C2517;
+  font-weight: 600;
+}
+
+table.info a {
+  color: #2C4530;
+  font-weight: 600;
+}
+
+.ctag {
+  display: inline-block;
+  background: #FEF3C7;
+  color: #92400E;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-left: 5px;
+}
+
+.action-row {
+  background: #F7F5EF;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ar-label {
+  font-size: 12.5px;
+  color: #6B7A62;
+  font-weight: 500;
+}
+
+.ar-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ab {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: 7px;
+  display: inline-block;
+}
+
+.ab.p {
+  background: #2C4530;
+  color: #fff;
+}
+
+.ab.o {
+  background: #fff;
+  color: #2C4530;
+  border: 1.5px solid #C8DEC9;
+}
+
+.footer {
+  background: #F2EFE9;
+  border-radius: 0 0 16px 16px;
+  padding: 18px 36px;
+  border-top: 1px solid #E4DFDA;
+  text-align: center;
+}
+
+.footer p {
+  font-size: 11px;
+  color: #ADB5A3;
+  line-height: 1.8;
+}
+
+@media (max-width:600px) {
+  .hdr,
+  .alert-bar,
+  .card,
+  .footer {
+    padding-left: 18px;
+    padding-right: 18px;
   }
+
+  .hdr {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .action-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 </style>
 </head>
 <body>
